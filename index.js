@@ -3,6 +3,7 @@ const express = require('express')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const cors = require('cors')
+// var jwt = require('jsonwebtoken');
 
 const port = process.env.PORT || 3000;
 const userName = process.env.DB_USERNAME
@@ -11,6 +12,15 @@ const userPassword = process.env.DB_PASSWORD
 app.use(cors())
 app.use(express.json())
 
+
+// function createToken() {
+//     jwt.sign(
+//         {
+//         data: 'foobar'
+//       }, 
+//       'secret', 
+//       { expiresIn: '1h' });
+// }
 
 const uri = `mongodb+srv://${userName}:${userPassword}@cluster0.40hja.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -49,7 +59,7 @@ async function run() {
             const id = req.params.id;
             const result = await serviceCollection.findOne({ _id: new ObjectId(id) })
             res.send(result)
-          })
+        })
 
         app.patch("/services/:id", async (req, res) => {
             const id = req.params.id;
@@ -64,17 +74,20 @@ async function run() {
             const result = await serviceCollection.deleteOne({ _id: new ObjectId(id) })
             console.log(result)
             res.send(result)
-          })
+        })
 
 
         //   users
         app.post("/user", async (req, res) => {
             const userData = req.body;
-            const isUserExist = await userCollection.findOne({email: user?.email}, {displayName: user?.displayName})
-            if(isUserExist?._id){
+            // const token = createToken(userData)
+            // console.log(token)
+            const isUserExist = await userCollection.findOne({ email: userData?.email })
+            if (isUserExist?._id) {
                 return res.send({
                     status: "success",
-                    message: "Login Success"
+                    message: "Login Success",
+                    // token
                 })
             }
             const result = await userCollection.insertOne(userData)
@@ -85,26 +98,26 @@ async function run() {
             const id = req.params.id;
             const result = await userCollection.findOne({ _id: new ObjectId(id) });
             res.send(result);
-          });
+        });
 
         app.get("/user/:email", async (req, res) => {
             const email = req.params.email;
             console.log(email)
             const result = await userCollection.findOne({ email });
             res.send(result);
-          });
+        });
 
-          app.patch("/user/:email", async (req, res) => {
+        app.patch("/user/:email", async (req, res) => {
             const email = req.params.email;
             const userData = req.body;
             const result = await userCollection.updateOne(
-              { email },
-              { $set: userData },
-              { upsert: true }
+                { email },
+                { $set: userData },
+                { upsert: true }
             );
             console.log(result)
             res.send(result);
-          });
+        });
 
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
