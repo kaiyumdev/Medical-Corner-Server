@@ -42,3 +42,24 @@ Medical Corner is a comprehensive healthcare application designed to connect pat
 5. Start the backend server:
     ```bash
     npm start
+
+    ## Usage
+
+1. Register as a new user or log in with existing credentials.
+2. Navigate through the app to book appointments, consult with doctors, and manage your medical records.
+3. Use the prescription management feature to view and manage your prescriptions.
+4. Access emergency services and health tips as needed.
+
+## Contributing
+
+We welcome contributions to the Medical Corner app. Please follow these steps to contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/YourFeature`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/YourFeature`).
+5. Open a pull request.
+
+## Contact
+
+For any inquiries or support, please contact us at abdulkaiyum.fahim@gmail.com.
