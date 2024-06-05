@@ -50,12 +50,18 @@ async function run() {
 
         app.patch("/services/:id", async (req, res) => {
             const id = req.params.id;
-            console.log(id)
             const updateService = req.body;
             const result = await serviceCollection.updateOne({ _id: new ObjectId(id) }, { $set: updateService })
-            console.log(result)
             res.send(result)
         })
+
+        app.delete("/services/:id", async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const result = await serviceCollection.deleteOne({ _id: new ObjectId(id) })
+            console.log(result)
+            res.send(result)
+          })
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
     }
