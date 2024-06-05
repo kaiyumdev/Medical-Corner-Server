@@ -90,20 +90,11 @@ async function run() {
 
 
         //   users
-        app.post("/user", async (req, res) => {
+        app.post("/user",verifyToken, async (req, res) => {
             const userData = req.body;
             const token = createToken(userData)
             console.log(token)
             const isUserExist = await userCollection.findOne({ email: userData?.email })
-            // if (isUserExist?._id) {
-            //     return res.send({
-            //         status: "success",
-            //         message: "Login Success",
-            //         // token
-            //     })
-            // }
-            // const result = await userCollection.insertOne(userData)
-            // res.send(result)
             if (isUserExist?._id) {
                 return res.send({
                   statu: "success",
@@ -128,7 +119,7 @@ async function run() {
             res.send(result);
         });
 
-        app.patch("/user/:email", async (req, res) => {
+        app.patch("/user/:email", verifyToken, async (req, res) => {
             const email = req.params.email;
             const userData = req.body;
             const result = await userCollection.updateOne(
