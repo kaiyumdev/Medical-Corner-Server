@@ -80,11 +80,11 @@ async function run() {
             const result = await userCollection.insertOne(userData)
             res.send(result)
         })
-        // app.get("/user/:email", async (req, res) => {
-        //     const email = req.params.email;
-        //     const result = await userCollection.findOne({ email });
-        //     res.send(result);
-        //   });
+        app.get("/user/:email", async (req, res) => {
+            const email = req.params.email;
+            const result = await userCollection.findOne({ email });
+            res.send(result);
+          });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
     }
