@@ -32,7 +32,6 @@ async function run() {
         app.post("/services", async (req, res) => {
             const servicesData = req.body;
             const result = await serviceCollection.insertOne(servicesData)
-            console.log(result)
             res.send(result)
         })
 
@@ -40,12 +39,12 @@ async function run() {
         app.get("/services", async (req, res) => {
             const servicesData = serviceCollection.find();
             const result = await servicesData.toArray()
-            console.log(result)
             res.send(result)
         })
 
-        app.get("/shoes/:id", async (req, res) => {
+        app.get("/services/:id", async (req, res) => {
             const id = req.params.id;
+            console.log(id)
             const result = await serviceCollection.findOne({ _id: new ObjectId(id) })
             console.log(result)
             res.send(result)
