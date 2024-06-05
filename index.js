@@ -4,6 +4,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const jwt = require("jsonwebtoken");
 const cors = require('cors')
+const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 const userName = process.env.DB_USERNAME
@@ -11,6 +12,7 @@ const userPassword = process.env.DB_PASSWORD
 
 app.use(cors())
 app.use(express.json())
+app.use(bodyParser.json());
 
 
 function createToken(user) {
