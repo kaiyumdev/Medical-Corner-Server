@@ -27,8 +27,11 @@ async function run() {
     try {
         await client.connect();
         const serviceDB = client.db("serviceDB");
+        const userDB = client.db("userDB");
         const serviceCollection = serviceDB.collection("serviceCollection");
+        const userCollection = userDB.collection("userCollection");
 
+        //services
         app.post("/services", async (req, res) => {
             const servicesData = req.body;
             const result = await serviceCollection.insertOne(servicesData)
@@ -62,6 +65,21 @@ async function run() {
             console.log(result)
             res.send(result)
           })
+
+
+        //   users
+        app.post("/user", async (req, res) => {
+            const userData = req.body;
+            const isUserExist = await userCollection.findOne({displayName: user?.displayName})
+            if(isUserExist?._id){
+                return res.send({
+                    status: "success",
+                    message: "Login Success"
+                })
+            }
+            const result = await userCollection.insertOne(userData)
+            res.send(result)
+        })
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
     }
