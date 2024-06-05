@@ -148,7 +148,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.send('This is Medical-Corner Server!')
 })
 
 app.listen(port, () => {
