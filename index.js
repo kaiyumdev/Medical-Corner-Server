@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
+const jwt = require("jsonwebtoken");
 const cors = require('cors')
-// var jwt = require('jsonwebtoken');
 
 const port = process.env.PORT || 3000;
 const userName = process.env.DB_USERNAME
@@ -13,14 +13,16 @@ app.use(cors())
 app.use(express.json())
 
 
-// function createToken() {
-//     jwt.sign(
-//         {
-//         data: 'foobar'
-//       }, 
-//       'secret', 
-//       { expiresIn: '1h' });
-// }
+function createToken(user) {
+    const token = jwt.sign(
+      {
+        email: user.email,
+      },
+      "secret",
+      { expiresIn: "7d" }
+    );
+    return token;
+  }
 
 const uri = `mongodb+srv://${userName}:${userPassword}@cluster0.40hja.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -80,18 +82,18 @@ async function run() {
         //   users
         app.post("/user", async (req, res) => {
             const userData = req.body;
-            // const token = createToken(userData)
-            // console.log(token)
-            const isUserExist = await userCollection.findOne({ email: userData?.email })
-            if (isUserExist?._id) {
-                return res.send({
-                    status: "success",
-                    message: "Login Success",
-                    // token
-                })
-            }
-            const result = await userCollection.insertOne(userData)
-            res.send(result)
+            const token = createToken(userData)
+            console.log(token)
+            // const isUserExist = await userCollection.findOne({ email: userData?.email })
+            // if (isUserExist?._id) {
+            //     return res.send({
+            //         status: "success",
+            //         message: "Login Success",
+            //         // token
+            //     })
+            // }
+            // const result = await userCollection.insertOne(userData)
+            // res.send(result)
         })
 
         app.get("/user/get/:id", async (req, res) => {
