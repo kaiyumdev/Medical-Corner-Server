@@ -24,6 +24,16 @@ function createToken(user) {
     return token;
   }
 
+  function verifyToken(req, res, next) {
+    const token = req.headers.authorization.split(" ")[1];
+    const verify = jwt.verify(token, "secret");
+    if (!verify?.email) {
+      return res.send("You are not authorized");
+    }
+    req.user = verify.email;
+    next();
+  }
+
 const uri = `mongodb+srv://${userName}:${userPassword}@cluster0.40hja.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -44,7 +54,7 @@ async function run() {
         const userCollection = userDB.collection("userCollection");
 
         //services
-        app.post("/services", async (req, res) => {
+        app.post("/services", verifyToken, async (req, res) => {
             const servicesData = req.body;
             const result = await serviceCollection.insertOne(servicesData)
             res.send(result)
@@ -63,14 +73,14 @@ async function run() {
             res.send(result)
         })
 
-        app.patch("/services/:id", async (req, res) => {
+        app.patch("/services/:id", verifyToken, async (req, res) => {
             const id = req.params.id;
             const updateService = req.body;
             const result = await serviceCollection.updateOne({ _id: new ObjectId(id) }, { $set: updateService })
             res.send(result)
         })
 
-        app.delete("/services/:id", async (req, res) => {
+        app.delete("/services/:id", verifyToken, async (req, res) => {
             const id = req.params.id;
             console.log(id)
             const result = await serviceCollection.deleteOne({ _id: new ObjectId(id) })
@@ -84,7 +94,7 @@ async function run() {
             const userData = req.body;
             const token = createToken(userData)
             console.log(token)
-            // const isUserExist = await userCollection.findOne({ email: userData?.email })
+            const isUserExist = await userCollection.findOne({ email: userData?.email })
             // if (isUserExist?._id) {
             //     return res.send({
             //         status: "success",
@@ -94,6 +104,15 @@ async function run() {
             // }
             // const result = await userCollection.insertOne(userData)
             // res.send(result)
+            if (isUserExist?._id) {
+                return res.send({
+                  statu: "success",
+                  message: "Login success",
+                  token,
+                });
+              }
+              await userCollection.insertOne(user);
+              return res.send({ token });
         })
 
         app.get("/user/get/:id", async (req, res) => {
