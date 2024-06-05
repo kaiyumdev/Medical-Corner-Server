@@ -70,13 +70,13 @@ async function run() {
         //   users
         app.post("/user", async (req, res) => {
             const userData = req.body;
-            // const isUserExist = await userCollection.findOne({email: user?.email}, {displayName: user?.displayName})
-            // if(isUserExist?._id){
-            //     return res.send({
-            //         status: "success",
-            //         message: "Login Success"
-            //     })
-            // }
+            const isUserExist = await userCollection.findOne({email: user?.email}, {displayName: user?.displayName})
+            if(isUserExist?._id){
+                return res.send({
+                    status: "success",
+                    message: "Login Success"
+                })
+            }
             const result = await userCollection.insertOne(userData)
             res.send(result)
         })
